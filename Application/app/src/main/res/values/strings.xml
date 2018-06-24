@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Show Hall</string>
+
+    <string name="mdb_api_key"></string>
+    <string name="url_mdb_img">http://image.tmdb.org/t/p/</string>
+    <string name="p_movies">Popular Movies</string>
+    <string name="tr_movies">Top Rated Movies</string>
+
+</resources>
