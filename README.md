@@ -12,7 +12,8 @@ This repo contains the source code of a Popular Movies Project.
 
 * ### Set-up Instructions
  1. Fork Repository.
- 2. Change The Movie DB API with your's. (API key creation guideline [here](https://developers.themoviedb.org/3/getting-started/introduction) )
+ 2. Create `The Movie DB` API Key. (API key creation guideline [here](https://developers.themoviedb.org/3/getting-started/introduction) )
+ 3. Paste API Key in `<string name="mdb_api_key">[Your Key]</string>` >> `strings.xml`.
 
 ## Screen Shots.
 
