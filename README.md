@@ -12,7 +12,7 @@ This repo contains the source code of a Popular Movies Project.
 
 * ### Set-up Instructions
  1. Fork Repository.
- 2. Change The Movie DB API with your's. (API key creation guideline [here](https://developers.themoviedb.org/3/getting-started/introduction)
+ 2. Change The Movie DB API with your's. (API key creation guideline [here](https://developers.themoviedb.org/3/getting-started/introduction) )
 
 ## Screen Shots.
 
