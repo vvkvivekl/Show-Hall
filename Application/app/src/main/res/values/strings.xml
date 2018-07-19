@@ -3,7 +3,9 @@
 
     <string name="mdb_api_key"></string>
     <string name="url_mdb_img">http://image.tmdb.org/t/p/</string>
+    <string name="url_youtube_img">http://img.youtube.com/vi/</string>
     <string name="p_movies">Popular Movies</string>
     <string name="tr_movies">Top Rated Movies</string>
+    <string name="f_movies">Favourites</string>
 
 </resources>

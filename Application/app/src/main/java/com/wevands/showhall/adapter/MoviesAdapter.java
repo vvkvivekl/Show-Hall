@@ -32,7 +32,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout moviesLayout;
         TextView movieTitle;
-        TextView data;
+        //TextView data;
         TextView rating;
         ImageView imageView;
         ProgressBar progressBar;
@@ -42,7 +42,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             super(v);
             moviesLayout = v.findViewById(R.id.movies_layout);
             movieTitle = v.findViewById(R.id.title);
-            data = v.findViewById(R.id.subtitle);
+            //data = v.findViewById(R.id.subtitle);
             rating = v.findViewById(R.id.rating);
             imageView = v.findViewById(R.id.image_iv);
             progressBar = v.findViewById(R.id.list_item_loading_pb);
@@ -50,10 +50,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(v.getContext(), "inside viewholder position = " + getAdapterPosition() + " " + movies.get(getAdapterPosition()).getId() , Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(v.getContext(), "inside viewholder position = " + getAdapterPosition() + " " + credits.get(getAdapterPosition()).getId() , Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(v.getContext(), DetailsActivity.class);
+                    Movie dataToSend = new Movie();
                     intent.putExtra("id", movies.get(getAdapterPosition()).getId());
+                    intent.putExtra("movie", movies.get(getAdapterPosition()));
                     intent.putExtra("position", getAdapterPosition());
                     v.getContext().startActivity(intent);
 
@@ -85,7 +87,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         String url = context.getResources().getString(R.string.url_mdb_img) + "w342/" + movies.get(position).getPosterPath();
 
         holder.movieTitle.setText(movies.get(position).getTitle());
-        holder.data.setText(movies.get(position).getReleaseDate());
+        //holder.data.setText(reviews.get(position).getReleaseDate());
         holder.rating.setText(movies.get(position).getVoteAverage() + "");
         Picasso.with(context).load(url).into(holder.imageView, new com.squareup.picasso.Callback() {
             @Override

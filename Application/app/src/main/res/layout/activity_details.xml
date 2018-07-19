@@ -24,10 +24,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="8dp"
                 android:textAlignment="center"
                 android:textColor="@color/colorWhite"
-                android:textSize="16pt"
+                android:textSize="14pt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -46,16 +45,66 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title_textView"
-                tools:text="Tag Line this is" />
+                tools:text="Tag Line this is"
+                android:text="tag"/>
+
+            <FrameLayout
+                android:id="@+id/frameLayout3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tagline_textView">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#3affffff"
+                    android:padding="5dp">
+
+                    <RatingBar
+                        android:id="@+id/details_activity_ratingBar"
+                        style="@android:style/Widget.DeviceDefault.Light.RatingBar.Indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.962"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/releaseDate_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="5dp"
+                        android:padding="5dp"
+                        android:paddingRight="15dp"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.795"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/details_activity_ratingBar"
+                        tools:text="releaseDate" />
+                </android.support.constraint.ConstraintLayout>
+            </FrameLayout>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="8dp"
                 app:cardElevation="1dp"
                 app:contentPadding="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.06"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tagline_textView">
 
@@ -65,109 +114,156 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:adjustViewBounds="true"
-                    android:minHeight="180dp"
+                    android:minHeight="200dp"
                     android:paddingTop="0dp"
                     android:scaleType="fitCenter" />
             </android.support.v7.widget.CardView>
 
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/details_credits_recyclerView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/details_genres_recyclerView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout3" >
+
+            </android.support.v7.widget.RecyclerView>
+
+            <FrameLayout
+                android:id="@+id/frameLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="80dp"
+                android:layout_marginTop="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/details_credits_recyclerView"
+                app:layout_constraintVertical_bias="0.054">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#3affffff"
+                        android:padding="5dp">
+
+
+                        <TextView
+                            android:id="@+id/voteAverage_textView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:maxLines="3"
+                            android:textColor="@color/colorBlack"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.444"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView"
+                            android:text="No Review" />
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Reviews"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/colorBlack"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:layout_editor_absoluteY="3dp" />
+
+                        <TextView
+                            android:id="@+id/voteCount_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/colorBlack"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/voteAverage_textView"
+                            android:text="more -" />
+                    </android.support.constraint.ConstraintLayout>
+                </android.support.v7.widget.CardView>
+            </FrameLayout>
+
             <TextView
                 android:id="@+id/overview_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="12dp"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:paddingRight="6dp"
+                android:paddingLeft="6dp"
+                android:textSize="11sp"
                 android:textColor="@color/colorWhite"
+                app:layout_constraintBottom_toTopOf="@+id/details_credits_recyclerView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/releaseDate_textView"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintTop_toBottomOf="@+id/details_genres_recyclerView"
+                app:layout_constraintVertical_bias="0.0"
                 tools:text="This is description for this thing" />
 
-            <TextView
-                android:id="@+id/releaseDate_textView"
-                android:layout_width="match_parent"
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/details_videos_recyclerView"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
-                android:textAlignment="center"
-                android:textColor="@color/colorWhite"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView"
-                tools:text="releaseDate" />
-
-            <TextView
-                android:id="@+id/voteAverage_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/colorWhite"
-                app:layout_constraintBottom_toTopOf="@+id/releaseDate_textView"
-                app:layout_constraintEnd_toStartOf="@+id/cardView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tagline_textView"
-                tools:text="7.8" />
-
-            <TextView
-                android:id="@+id/voteCount_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginStart="8dp"
-                android:textColor="@color/colorWhite"
-                app:layout_constraintBottom_toTopOf="@+id/releaseDate_textView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.567"
-                app:layout_constraintStart_toEndOf="@+id/cardView"
-                app:layout_constraintTop_toBottomOf="@+id/tagline_textView"
-                app:layout_constraintVertical_bias="0.507"
-                tools:text="25642" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Reviews"
-                android:textAlignment="viewStart"
-                android:textColor="@color/colorWhite"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/voteCount_textView"
+                android:layout_marginTop="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/cardView"
-                app:layout_constraintTop_toBottomOf="@+id/tagline_textView"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
 
-            <TextView
-                android:id="@+id/textView2"
+            </android.support.v7.widget.RecyclerView>
+
+            <Button
+                android:id="@+id/buttonFav"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginBottom="1dp"
                 android:layout_marginTop="8dp"
-                android:text="Reating"
-                android:textAlignment="viewStart"
-                android:textColor="@color/colorWhite"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/voteAverage_textView"
-                app:layout_constraintEnd_toStartOf="@+id/cardView"
-                app:layout_constraintHorizontal_bias="0.421"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tagline_textView"
-                app:layout_constraintVertical_bias="1.0" />
+                android:text="Button"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/details_videos_recyclerView"
+                tools:layout_editor_absoluteX="148dp" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/details_fab_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:layout_marginEnd="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
     <ProgressBar
         android:id="@+id/details_activity_pb"
         android:layout_width="wrap_content"

@@ -1,8 +1,17 @@
 package com.wevands.showhall.model;
 
+import android.content.res.TypedArray;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Movie {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Movie implements Parcelable {
 
     @SerializedName("title")
     private String title;
@@ -28,11 +37,26 @@ public class Movie {
     private Double voteAverage;
     @SerializedName("vote_count")
     private int voteCount;
+    @SerializedName("genres")
+    private List<Genres> genres = new ArrayList<>();
 
     public Movie() {
     }
 
-    public Movie(int id, String title, String originalTitle, String tagline, String overview, boolean adult, String posterPath, String backdropPath, String releaseDate, boolean video, double voteAverage, int voteCount) {
+    public Movie(
+            int id,
+            String title,
+            String originalTitle,
+            String tagline,
+            String overview,
+            boolean adult,
+            String posterPath,
+            String backdropPath,
+            String releaseDate,
+            boolean video,
+            double voteAverage,
+            int voteCount,
+            List<Genres> genres) {
         this.id = id;
         this.title = title;
         this.originalTitle = originalTitle;
@@ -44,6 +68,7 @@ public class Movie {
         this.video = video;
         this.voteAverage = voteAverage;
         this.voteCount = voteCount;
+        this.genres = genres;
     }
 
     public int getId() {
@@ -142,4 +167,62 @@ public class Movie {
         this.voteCount = voteCount;
     }
 
+public List<Genres> getGenres(){ return genres; }
+public void setGenres(List<Genres> genres) {this.genres = genres;}
+
+    protected Movie(Parcel in) {
+
+        title = in.readString();
+        id = in.readInt();
+        originalTitle = in.readString();
+        tagline = in.readString();
+        overview = in.readString();
+        adult = in.readByte() != 0x00;
+        posterPath = in.readString();
+        backdropPath = in.readString();
+        releaseDate = in.readString();
+        video = in.readByte() != 0x00;
+        voteAverage = in.readByte() == 0x00 ? null : in.readDouble();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(title);
+        dest.writeInt(id);
+        dest.writeString(originalTitle);
+        dest.writeString(tagline);
+        dest.writeString(overview);
+        dest.writeByte((byte) (adult ? 0x01 : 0x00));
+        dest.writeString(posterPath);
+        dest.writeString(backdropPath);
+        dest.writeString(releaseDate);
+        dest.writeByte((byte) (video ? 0x01 : 0x00));
+        if (voteAverage == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(voteAverage);
+        }
+        dest.writeInt(voteCount);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }
+
