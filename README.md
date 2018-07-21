@@ -17,7 +17,7 @@ This repo contains the source code of a Popular Movies Project.
 
 ## Screen Shots.
 
- * Updating soon...
+![Show Hall Main Screen](https://user-images.githubusercontent.com/36252861/43031741-5d859230-8cc5-11e8-822f-322f73326037.png)
  
 ## creators
 
