@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String DATABASE_NAME = "movies_db";
     private MovieDatabase movieDatabase;
     boolean doubleBackToExitPressedOnce = false;
+    private Parcelable recyclerViewState;
+
+    private static final String LIFECYCLE_CALLBACK_MOVIELIST = "movie_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,36 +82,42 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(manager);
 
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (movieRequestType!=3) {
-                        if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                            isScrolling = true;
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (movieRequestType != 3) {
+                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                        isScrolling = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (movieRequestType != 3) {
+                    currentItems = manager.getChildCount();
+
+                    totalItems = manager.getItemCount();
+                    scrollOutItems = manager.findFirstVisibleItemPosition();
+                    if (isScrolling && (currentItems + scrollOutItems == totalItems)) {
+                        isScrolling = false;
+                        if (pageMovie == 1 || pageMovie < totalPage) {
+                            pageMovie = pageMovie + 1;
+                            loadData();
                         }
                     }
                 }
-
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (movieRequestType!=3) {
-                        currentItems = manager.getChildCount();
-
-                        totalItems = manager.getItemCount();
-                        scrollOutItems = manager.findFirstVisibleItemPosition();
-                        if (isScrolling && (currentItems + scrollOutItems == totalItems)) {
-                            isScrolling = false;
-                            if (pageMovie == 1 || pageMovie < totalPage) {
-                                pageMovie = pageMovie + 1;
-                                loadData();
-                            }
-                        }
-                    }
-                }
-            });
-
+            }
+        });
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(LIFECYCLE_CALLBACK_MOVIELIST)) {
+                movies = savedInstanceState.getParcelableArrayList(LIFECYCLE_CALLBACK_MOVIELIST);
+                moviesAdapter = new MoviesAdapter(movies, R.layout.item_movie, getApplicationContext());
+                recyclerView.setAdapter(moviesAdapter);
+            }
+        }
         /*
         Fab Source : https://www.viralandroid.com/2016/02/android-floating-action-menu-example.html
          */
@@ -138,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Check Movie added in favourite
-                        if (movieDatabase.daoAccess().fetchAllMovies() != null && movieDatabase.daoAccess().fetchAllMovies().size()!=0){
+                        if (movieDatabase.daoAccess().fetchAllMovies() != null && movieDatabase.daoAccess().fetchAllMovies().size() != 0) {
                             moviesList = movieDatabase.daoAccess().fetchAllMovies();
 //                    Log.d(TAG, moviesList.get(0).getMovieName());
                         }
@@ -154,6 +164,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         loadData();
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        List<Movie> lifecycleListView = movies;
+        outState.putParcelableArrayList(LIFECYCLE_CALLBACK_MOVIELIST, (ArrayList<? extends Parcelable>) lifecycleListView);
     }
 
     public void loadData() {
@@ -162,99 +180,99 @@ public class MainActivity extends AppCompatActivity {
         /*
         Grid reference : https://stackoverflow.com/questions/40587168/simple-android-grid-example-using-recyclerview-with-gridlayoutmanager-like-the
          */
-runOnUiThread(new Runnable() {
-    @Override
-    public void run() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 
-        progressBar.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
 
-            if (requestType == 3){
+                    if (requestType == 3) {
 
-                if (moviesList.size() > 0) {
+                        if (moviesList.size() > 0) {
 
-                    movies.clear();
-                    for (int i = 0; i < moviesList.size(); i++) {
+                            movies.clear();
+                            for (int i = 0; i < moviesList.size(); i++) {
 
-                        Log.d(TAG, "For " + moviesList.get(i).getMovieId());
+                                Log.d(TAG, "For " + moviesList.get(i).getMovieId());
+                                ApiInterface apiService =
+                                        Api.getClient().create(ApiInterface.class);
+                                Call<Movie> call = apiService.getMovieDetails(moviesList.get(i).getMovieId(), API_KEY);
+                                call.enqueue(new Callback<Movie>() {
+                                    @Override
+                                    public void onResponse(Call<Movie> call, Response<Movie> response) {
+
+                                        Movie a = response.body();
+
+                                        Log.d(TAG, a.getTitle());
+                                        movies.add(a);
+                                        Log.d(TAG, movies.get(0).getTitle());
+                                        if (moviesList.size() == moviesList.size()) {
+                                            Log.e(TAG, movies.size() + " size");
+                                            moviesAdapter = new MoviesAdapter(movies, R.layout.item_movie, getApplicationContext());
+                                            recyclerView.setAdapter(moviesAdapter);
+                                        }
+                                        if (progressBar != null) {
+                                            progressBar.setVisibility(View.GONE);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Movie> call, Throwable t) {
+                                        // Log error here since request failed
+                                        Log.e(TAG, t.toString());
+                                    }
+                                });
+
+                            }
+
+                        } else {
+                            if (progressBar != null) {
+                                progressBar.setVisibility(View.GONE);
+                            }
+                            Toast.makeText(MainActivity.this, "No Favourite movies", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
                         ApiInterface apiService =
                                 Api.getClient().create(ApiInterface.class);
-                        Call<Movie> call = apiService.getMovieDetails(moviesList.get(i).getMovieId(), API_KEY);
-                        call.enqueue(new Callback<Movie>() {
+                        Call<ListMovies> call = apiService.getPopularMovies(API_KEY, pageMovie);
+                        switch (requestType) {
+                            case 1:
+                                call = apiService.getPopularMovies(API_KEY, pageMovie);
+                                textViewMoviesType.setText(MainActivity.this.getResources().getString(R.string.p_movies));
+                                break;
+                            case 2:
+                                call = apiService.getTopRatedMovies(API_KEY, pageMovie);
+                                textViewMoviesType.setText(MainActivity.this.getResources().getString(R.string.tr_movies));
+                                break;
+                        }
+                        call.enqueue(new Callback<ListMovies>() {
                             @Override
-                            public void onResponse(Call<Movie> call, Response<Movie> response) {
-
-                                Movie a = response.body();
-
-                                Log.d(TAG, a.getTitle());
-                                movies.add(a);
-                                Log.d(TAG, movies.get(0).getTitle());
-                                if(moviesList.size() == moviesList.size()) {
-                                    Log.e(TAG, movies.size() + " size");
+                            public void onResponse(Call<ListMovies> call, Response<ListMovies> response) {
+                                pageMovie = response.body().getPage();
+                                List<Movie> a = response.body().getResults();
+                                movies.addAll(a);
+                                if (pageMovie == 1) {
+                                    totalPage = response.body().getTotalPages();
                                     moviesAdapter = new MoviesAdapter(movies, R.layout.item_movie, getApplicationContext());
                                     recyclerView.setAdapter(moviesAdapter);
+                                } else {
+                                    moviesAdapter.notifyDataSetChanged();
                                 }
+
                                 if (progressBar != null) {
                                     progressBar.setVisibility(View.GONE);
                                 }
                             }
 
                             @Override
-                            public void onFailure(Call<Movie> call, Throwable t) {
+                            public void onFailure(Call<ListMovies> call, Throwable t) {
                                 // Log error here since request failed
                                 Log.e(TAG, t.toString());
                             }
                         });
-
                     }
-
-                } else {
-                    if (progressBar != null) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                    Toast.makeText(MainActivity.this,"No Favourite movies", Toast.LENGTH_LONG).show();
                 }
-            }else {
-                ApiInterface apiService =
-                        Api.getClient().create(ApiInterface.class);
-                Call<ListMovies> call = apiService.getPopularMovies(API_KEY, pageMovie);
-                switch (requestType) {
-                    case 1:
-                        call = apiService.getPopularMovies(API_KEY, pageMovie);
-                        textViewMoviesType.setText(MainActivity.this.getResources().getString(R.string.p_movies));
-                        break;
-                    case 2:
-                        call = apiService.getTopRatedMovies(API_KEY, pageMovie);
-                        textViewMoviesType.setText(MainActivity.this.getResources().getString(R.string.tr_movies));
-                        break;
-                }
-                call.enqueue(new Callback<ListMovies>() {
-                    @Override
-                    public void onResponse(Call<ListMovies> call, Response<ListMovies> response) {
-                        pageMovie = response.body().getPage();
-                        List<Movie> a = response.body().getResults();
-                        movies.addAll(a);
-                        if (pageMovie == 1) {
-                            totalPage = response.body().getTotalPages();
-                            moviesAdapter = new MoviesAdapter(movies, R.layout.item_movie, getApplicationContext());
-                            recyclerView.setAdapter(moviesAdapter);
-                        } else {
-                            moviesAdapter.notifyDataSetChanged();
-                        }
-
-                        if (progressBar != null) {
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ListMovies> call, Throwable t) {
-                        // Log error here since request failed
-                        Log.e(TAG, t.toString());
-                    }
-                });
-            }
-    }
-});
+            });
         } else {
             Toast.makeText(this, "No Internet connection!", Toast.LENGTH_LONG).show();
         }
@@ -274,10 +292,11 @@ runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 2000);
     }
+
     /*
         Network changing:
             https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out

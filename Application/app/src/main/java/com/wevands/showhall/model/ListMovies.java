@@ -1,5 +1,7 @@
 package com.wevands.showhall.model;
 
+import android.arch.lifecycle.LiveData;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

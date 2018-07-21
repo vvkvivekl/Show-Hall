@@ -13,7 +13,7 @@ This repo contains the source code of a Popular Movies Project.
 * ### Set-up Instructions
  1. Fork Repository.
  2. Create `The Movie DB` API Key. (API key creation guideline [here](https://developers.themoviedb.org/3/getting-started/introduction) )
- 3. Paste API Key in `<string name="mdb_api_key">[Your Key]</string>` >> `strings.xml`.
+ 3. Paste API Key in `gradle.properties` as `ShowHall_mdb_api_key="<your key here>"`. Follow this [Click here](https://medium.com/code-better/hiding-api-keys-from-your-android-repository-b23f5598b906)
 
 ## Screen Shots.
 

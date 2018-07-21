@@ -1,5 +1,6 @@
 package com.wevands.showhall.room.model;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.wevands.showhall.model.Genres;
+import com.wevands.showhall.model.ListMovies;
 import com.wevands.showhall.room.mTypeConverters;
 
 import java.util.ArrayList;

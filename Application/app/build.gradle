@@ -14,9 +14,15 @@ android {
         renderscriptSupportModeEnabled true
     }
     buildTypes {
+        debug {
+            buildConfigField 'String', "MovieApiKey", ShowHall_mdb_api_key
+            resValue 'string', "mdb_api_key", ShowHall_mdb_api_key
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "MovieApiKey", ShowHall_mdb_api_key
+            resValue 'string', "mdb_api_key", ShowHall_mdb_api_key
         }
     }
 }
@@ -46,6 +52,8 @@ dependencies {
     // Room database
     implementation 'android.arch.persistence.room:runtime:1.1.1'
     annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
+
+
 }
 repositories {
 
