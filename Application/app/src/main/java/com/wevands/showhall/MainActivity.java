@@ -1,13 +1,17 @@
 package com.wevands.showhall;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,11 +21,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.wevands.showhall.adapter.MoviesAdapter;
 import com.wevands.showhall.heplers.Utility;
 import com.wevands.showhall.model.ListMovies;
 import com.wevands.showhall.model.Movie;
+import com.wevands.showhall.model.MoviesViewModel;
 import com.wevands.showhall.room.MovieDatabase;
 import com.wevands.showhall.room.model.Movies;
 import com.wevands.showhall.utils.Api;
@@ -33,8 +39,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import com.github.clans.fab.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -52,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
     MoviesAdapter moviesAdapter;
     // Rooms database
     private static final String DATABASE_NAME = "movies_db";
-    private MovieDatabase movieDatabase;
+    //private MovieDatabase movieDatabase;
     boolean doubleBackToExitPressedOnce = false;
     private Parcelable recyclerViewState;
-
+    MoviesViewModel moviesViewModel;
     private static final String LIFECYCLE_CALLBACK_MOVIELIST = "movie_list";
 
     @Override
@@ -69,9 +73,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         // initializing Room database
+        /*
         movieDatabase = Room.databaseBuilder(getApplicationContext(),
                 MovieDatabase.class, DATABASE_NAME)
                 .build();
+*/
+        moviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
         recyclerView = findViewById(R.id.movies_recycler_view);
         progressBar = findViewById(R.id.main_activity_loading_pb);
@@ -148,12 +155,27 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Check Movie added in favourite
+                        /*
                         if (movieDatabase.daoAccess().fetchAllMovies() != null && movieDatabase.daoAccess().fetchAllMovies().size() != 0) {
                             moviesList = movieDatabase.daoAccess().fetchAllMovies();
 //                    Log.d(TAG, moviesList.get(0).getMovieName());
                         }
                         movieRequestType = 3;
                         loadData();
+                        */
+
+                        movieRequestType = 3;
+                        moviesViewModel.getAllMovies().observe(MainActivity.this, new Observer<List<Movies>>() {
+                            @Override
+                            public void onChanged(@Nullable List<Movies> movies) {
+                                moviesList = movies;
+                                Log.d(TAG, ">>>>>>>>>>\n\n>>>"+moviesList.size());
+                                loadData();
+
+                            }
+                        });
+
+
                     }
 
                 }).start();

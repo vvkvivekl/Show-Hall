@@ -1,5 +1,6 @@
 package com.wevands.showhall.room;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -19,7 +20,7 @@ public interface DaoAccess {
     @Query("SELECT * FROM Movies WHERE movieId = :movieId")
     Movies fetchOneMoviesbyMovieId (int movieId);
     @Query("SELECT * FROM Movies")
-    List<Movies> fetchAllMovies ();
+    LiveData<List<Movies>> fetchAllMovies ();
     @Update
     void updateMovie (Movies movies);
     @Delete

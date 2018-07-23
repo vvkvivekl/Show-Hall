@@ -1,5 +1,7 @@
 package com.wevands.showhall;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +47,7 @@ import com.wevands.showhall.model.Movie;
 import com.wevands.showhall.model.MovieCredits;
 import com.wevands.showhall.model.MovieReviews;
 import com.wevands.showhall.model.MovieVideos;
+import com.wevands.showhall.model.MoviesViewModel;
 import com.wevands.showhall.room.MovieDatabase;
 import com.wevands.showhall.room.model.Movies;
 import com.wevands.showhall.utils.Api;
@@ -86,9 +89,11 @@ public class DetailsActivity extends AppCompatActivity {
     int overviewType = 0;
     boolean isFavourite = false;
 
+    MoviesViewModel moviesViewModel;
+    Movies movies;
     // Rooms database
-    private static final String DATABASE_NAME = "movies_db";
-    private MovieDatabase movieDatabase;
+    //private static final String DATABASE_NAME = "movies_db";
+    //private MovieDatabase movieDatabase;
 
 
     @Override
@@ -130,21 +135,22 @@ public class DetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         movie1 = intent.getParcelableExtra("movie");
         Log.d(TAG, "Parcel Received: \n" + "getId() > " + movie1.getId() + " \ngetTitle() > " + movie1.getTitle());
-
+        moviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
+        movies = moviesViewModel.getMovie(movie1.getId());
         // initializing Room database
+        /*
         movieDatabase = Room.databaseBuilder(getApplicationContext(),
                 MovieDatabase.class, DATABASE_NAME)
                 .build();
-
+*/
         new Thread(new Runnable() {
             @Override
             public void run() {
                 // Check Movie added in favourite
-                if (movieDatabase.daoAccess().fetchOneMoviesbyMovieId(movie1.getId()) != null) {
+                if (movies != null) {
                     isFavourite = true; // set Favourite true
-                    Log.d(TAG, "Database: " + movie1.getPosterPath() + " > "+ movieDatabase.daoAccess().fetchOneMoviesbyMovieId(movie1.getId()).getPosterPath() + " " + isFavourite);
+                    Log.d(TAG, "Database: " + movie1.getPosterPath() + " > "+ movies.getPosterPath() + " " + isFavourite);
                     favouriteBtn(); // refresh fav button
-                    Movies movies = movieDatabase.daoAccess().fetchOneMoviesbyMovieId(movie1.getId());
                     Movie movie = new Movie(
                             movies.getMovieId(),
                             movies.getMovieName(),
@@ -227,7 +233,7 @@ floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void run() {
                     Movies movie = new Movies(movie1.getId(), movie1.getTitle(), movie1.getOriginalTitle(), movie1.getTagline(), movie1.getOverview(), movie1.isAdult(), movie1.getPosterPath(), movie1.getBackdropPath(), movie1.getReleaseDate(), movie1.isVideo(), String.valueOf(movie1.getVoteAverage()), movie1.getVoteCount(), movie3.getGenres());
-                    movieDatabase.daoAccess().deleteMovie(movie);
+                    moviesViewModel.deleteMovies(movie);
                     isFavourite = false;
                     favouriteBtn();
                     runOnUiThread(new Runnable() {
@@ -244,7 +250,7 @@ floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void run() {
                     Movies movie = new Movies(movie1.getId(), movie1.getTitle(), movie1.getOriginalTitle(), movie1.getTagline(), movie1.getOverview(), movie1.isAdult(), movie1.getPosterPath(), movie1.getBackdropPath(), movie1.getReleaseDate(), movie1.isVideo(), String.valueOf(movie1.getVoteAverage()), movie1.getVoteCount(), movie3.getGenres());
-                    movieDatabase.daoAccess().insertOnlySingleMovie(movie);
+                    moviesViewModel.addMovie(movie);
                     isFavourite = true;
                     favouriteBtn();
                     runOnUiThread(new Runnable() {

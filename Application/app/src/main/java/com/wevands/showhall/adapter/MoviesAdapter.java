@@ -18,6 +18,7 @@ import com.wevands.showhall.DetailsActivity;
 import com.wevands.showhall.R;
 import com.wevands.showhall.model.ListMovies;
 import com.wevands.showhall.model.Movie;
+import com.wevands.showhall.room.model.Movies;
 
 import java.util.List;
 
@@ -104,7 +105,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         });
 
     }
-
     @Override
     public int getItemCount() {
         return movies.size();
