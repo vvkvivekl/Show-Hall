@@ -54,9 +54,7 @@ public class MainActivity extends AppCompatActivity {
     List<Movie> movies = new ArrayList<Movie>();
     List<Movies> moviesList = new ArrayList<Movies>();
     MoviesAdapter moviesAdapter;
-    // Rooms database
-    private static final String DATABASE_NAME = "movies_db";
-    //private MovieDatabase movieDatabase;
+
     boolean doubleBackToExitPressedOnce = false;
     private Parcelable recyclerViewState;
     MoviesViewModel moviesViewModel;
@@ -72,12 +70,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Error.", Toast.LENGTH_LONG).show();
             return;
         }
-        // initializing Room database
-        /*
-        movieDatabase = Room.databaseBuilder(getApplicationContext(),
-                MovieDatabase.class, DATABASE_NAME)
-                .build();
-*/
+
         moviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
 
         recyclerView = findViewById(R.id.movies_recycler_view);
@@ -121,10 +114,35 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(LIFECYCLE_CALLBACK_MOVIELIST)) {
                 movies = savedInstanceState.getParcelableArrayList(LIFECYCLE_CALLBACK_MOVIELIST);
-                moviesAdapter = new MoviesAdapter(movies, R.layout.item_movie, getApplicationContext());
-                recyclerView.setAdapter(moviesAdapter);
+                manager.onRestoreInstanceState(recyclerViewState);
             }
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // db favourite
+                moviesViewModel.getAllMovies().observe(MainActivity.this, new Observer<List<Movies>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Movies> movies) {
+                        moviesList = movies;
+                        if (moviesList.size() != 0 && movieRequestType == 3) {
+                            Log.d(TAG, ">>>>>>>>>>\n\n>>>" + moviesList.size());
+                            loadData();
+                        } else if(moviesList.size() == 0 && movieRequestType == 3) {
+                            if (progressBar != null) {
+                                progressBar.setVisibility(View.GONE);
+                            }
+                            movies.clear();
+                            movieRequestType = 1;
+                            loadData();
+                            Toast.makeText(MainActivity.this, "No Favourite movies", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+            }
+
+        }).start();
         /*
         Fab Source : https://www.viralandroid.com/2016/02/android-floating-action-menu-example.html
          */
@@ -151,36 +169,12 @@ public class MainActivity extends AppCompatActivity {
         });
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Check Movie added in favourite
-                        /*
-                        if (movieDatabase.daoAccess().fetchAllMovies() != null && movieDatabase.daoAccess().fetchAllMovies().size() != 0) {
-                            moviesList = movieDatabase.daoAccess().fetchAllMovies();
-//                    Log.d(TAG, moviesList.get(0).getMovieName());
-                        }
-                        movieRequestType = 3;
-                        loadData();
-                        */
-
-                        movieRequestType = 3;
-                        moviesViewModel.getAllMovies().observe(MainActivity.this, new Observer<List<Movies>>() {
-                            @Override
-                            public void onChanged(@Nullable List<Movies> movies) {
-                                moviesList = movies;
-                                Log.d(TAG, ">>>>>>>>>>\n\n>>>"+moviesList.size());
-                                loadData();
-
-                            }
-                        });
-
-
-                    }
-
-                }).start();
-
-                textViewMoviesType.setText("Favourite Movies");
+                if (moviesList.size() != 0) {
+                    Log.d(TAG, ">>>>>>>>>>\n\n>>>" + moviesList.size());
+                    movieRequestType = 3;
+                    textViewMoviesType.setText("Favourite Movies");
+                    loadData();
+                }
             }
         });
 
@@ -192,8 +186,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        List<Movie> lifecycleListView = movies;
-        outState.putParcelableArrayList(LIFECYCLE_CALLBACK_MOVIELIST, (ArrayList<? extends Parcelable>) lifecycleListView);
+        recyclerViewState = manager.onSaveInstanceState();
+        outState.putParcelableArrayList(LIFECYCLE_CALLBACK_MOVIELIST, (ArrayList<? extends Parcelable>) movies);
     }
 
     public void loadData() {
@@ -251,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
                             if (progressBar != null) {
                                 progressBar.setVisibility(View.GONE);
                             }
+                            recyclerView.setAdapter(null);
                             Toast.makeText(MainActivity.this, "No Favourite movies", Toast.LENGTH_LONG).show();
                         }
                     } else {

@@ -73,7 +73,7 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.MovieVie
         String url = context.getResources().getString(R.string.url_mdb_img) + "w342/" + credits.get(position).getProfile_path();
 
         holder.creditTitle.setText(credits.get(position).getName());
-        Picasso.with(context).load(url).into(holder.imageView, new com.squareup.picasso.Callback() {
+        Picasso.with(context).load(url).error(R.drawable.error).into(holder.imageView, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
                 if (holder.progressBar != null) {

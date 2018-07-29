@@ -90,7 +90,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         holder.movieTitle.setText(movies.get(position).getTitle());
         //holder.data.setText(reviews.get(position).getReleaseDate());
         holder.rating.setText(movies.get(position).getVoteAverage() + "");
-        Picasso.with(context).load(url).into(holder.imageView, new com.squareup.picasso.Callback() {
+        Picasso.with(context).load(url).error(R.drawable.error).into(holder.imageView, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
                 if (holder.progressBar != null) {

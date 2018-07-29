@@ -77,11 +77,11 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideoViewH
 
     @Override
     public void onBindViewHolder(final VideoViewHolder holder, final int position) {
-        String url = context.getResources().getString(R.string.url_youtube_img) + videos.get(position).getKey() + "/hqdefault.jpg";
+        String url = context.getResources().getString(R.string.url_youtube_img) + videos.get(holder.getAdapterPosition()).getKey() + "/hqdefault.jpg";
 
-        holder.videoTitle.setText(videos.get(position).getName());
-        holder.videoSub.setText(videos.get(position).getSite());
-        Picasso.with(context).load(url).into(holder.videosImageView, new com.squareup.picasso.Callback() {
+        holder.videoTitle.setText(videos.get(holder.getAdapterPosition()).getName());
+        holder.videoSub.setText(videos.get(holder.getAdapterPosition()).getSite());
+        Picasso.with(context).load(url).error(R.drawable.error).into(holder.videosImageView, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
                 if (holder.progressBar != null) {

@@ -1,5 +1,6 @@
 package com.wevands.showhall;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
@@ -290,7 +291,6 @@ floatingActionButton.setOnClickListener(new View.OnClickListener() {
         Log.d(TAG, "Tag: "+movie.getTagline());
         overviewTextView.setText(movie.getOverview());
         releaseDateTextView.setText(parseDateToddMMyyyy(movie.getReleaseDate()));
-        reviewTextView.setText(movie.getVoteAverage() + "");
 
         float rating = (float) (movie.getVoteAverage() / 2);
 
@@ -301,12 +301,12 @@ floatingActionButton.setOnClickListener(new View.OnClickListener() {
         https://stackoverflow.com/questions/4761686/how-to-set-background-color-of-an-activity-to-white-programmatically
          */
 
-        Picasso.with(context).load(getImageUrl(movie.getPosterPath(), null)).into(posterImageView);
+        Picasso.with(context).load(getImageUrl(movie.getPosterPath(), null)).error(R.drawable.error).into(posterImageView);
         /*
         Set background in picasso
         https://stackoverflow.com/questions/29777354/how-do-i-set-background-image-with-picasso-in-code
          */
-        Picasso.with(context).load(getImageUrl(movie.getPosterPath(), "92")).into(new Target() {
+        Picasso.with(context).load(getImageUrl(movie.getPosterPath(), "92")).error(R.drawable.error).into(new Target() {
 
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -381,14 +381,18 @@ floatingActionButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void run() {
                                 Random random = new Random();
-                                final int r = random.nextInt((max - min) + 1) + min;
+                                int r = random.nextInt((max - min) + 1) + min;
+                                if (r==max)
+                                    r = r-1;
                                 String rev = reviews.get(r).getContent();
                                 Log.v(TAG, r + " >> " + rev);
+                                final int finalR = r;
                                 runOnUiThread(new Runnable() {
+                                    @SuppressLint("SetTextI18n")
                                     @Override
                                     public void run() {
                                         voteCountTextView.setText("More " + (max - 1));
-                                        reviewTextView.setText("@"+reviews.get(r).getAuthor()+": \"" + reviews.get(r).getContent() + "\"");
+                                        reviewTextView.setText("@"+reviews.get(finalR).getAuthor()+": \"" + reviews.get(finalR).getContent() + "\"");
                                     }
                                 });
 
